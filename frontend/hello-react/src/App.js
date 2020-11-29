@@ -1,56 +1,40 @@
+import React from 'react';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { Button } from 'react-bootstrap';
-import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import Container from 'react-bootstrap/Container'
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-document.cookie = "username=John Doe";
+import Login from "./components/login.component";
+import SignUp from "./components/signup.component";
 
 function App() {
-  return (
-    <div >
-      <Col  style={{
-        position: 'absolute', left: '50%', top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '50%'
-    }}>
-    <Card border="secondary" >
-  <Card.Header as="h5" >LOGIN</Card.Header>
-  <Card.Body>
-  <Form>
-  <Form.Group controlId="FormUsername">
-    <Form.Label>USERNAME</Form.Label>
-    <Form.Control type="username" placeholder="Username" />
-  
-  </Form.Group>
+  return (<Router>
+    <div className="App">
+      <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+        <div className="container">
+          <Link className="navbar-brand" to={"/sign-in"}>RemoteStack</Link>
+          <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <Link className="nav-link" to={"/sign-in"}>Sign in</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to={"/sign-up"}>Sign up</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
 
-  <Form.Group controlId="FormPassword">
-    <Form.Label>Password</Form.Label>
-    <Form.Control type="password" placeholder="Password" />
-  </Form.Group>
-  <Container>
-  <Row>
-    <Col md={4}>
-    <Button variant="primary"  type="login">
-    Login
-  </Button>
-    </Col>
-    <Col md={{ span: 4, offset: 4 }} > <Button variant="success" type="regis" >
-    REGISTER
-  </Button></Col>
-  </Row>
-
-</Container>
-
-
-</Form>
-  </Card.Body>
-</Card>
-
-      </Col>
-    </div>
+      <div className="outer">
+        <div className="inner">
+          <Switch>
+            <Route exact path='/' component={Login} />
+            <Route path="/sign-in" component={Login} />
+            <Route path="/sign-up" component={SignUp} />
+          </Switch>
+        </div>
+      </div>
+    </div></Router>
   );
 }
 
