@@ -18,6 +18,12 @@ mongoose.connect(
 ).then(()=>console.log("Mongoose Connected"))
 .catch(err=>console.log(err))
 
+app.post('/',(req,res)=>{
+    res.json({
+        data:"test from app.js"
+    })
+})
+
 app.listen(5000,()=>{
     console.log('Application start at port 5000')
 })

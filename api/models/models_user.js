@@ -9,5 +9,5 @@ const RegisterSchema = new Schema({
     passwords : String
 })
 
-const Register = mongoose.model('Register',RegisterSchema)
-module.exports = Register
+const User = mongoose.model('User',RegisterSchema)
+module.exports = User

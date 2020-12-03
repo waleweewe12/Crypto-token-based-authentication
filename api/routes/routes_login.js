@@ -1,16 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
 const bodyParser=require('body-parser')
-const RegisterModel = require('../models/models_register')
+const UserModel = require('../models/models_user')
 
 router.use(bodyParser.json())
+router.use(cookieParser())
 
 router.post('/',(req,res)=>{
 
-    console.log(req.body.username)
-
-    const query = RegisterModel.where(
+    const query = UserModel.where(
         {
             username:req.body.username,
             passwords:req.body.passwords
@@ -29,11 +30,14 @@ router.post('/',(req,res)=>{
             }
         )
 
-        if(token)
-            res.json({token})
+        res.json({token})
     }).catch(err=>{
         res.json(err)
     })
 })
+
+async function verifytoken(token){
+
+}
 
 module.exports = router
