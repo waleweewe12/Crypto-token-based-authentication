@@ -25,6 +25,7 @@ router.post('/',async (req,res)=>{
     .then(result=>{
         //console.log(result)
         res.json({
+            status:"success",
             message:"save user in database success.",
             result
         })
@@ -32,15 +33,13 @@ router.post('/',async (req,res)=>{
     .catch(err=> {
         //console.log(err)
         res.json({
+            status:"fail",
             message:"Error on save user in database.",
             err
         })
     })
 })
 
-router.get('/',(req,res)=>{
-    res.json({hello:"test จ้า"})
-})
 
 async function getBcryptPasswords(passwords){
 
