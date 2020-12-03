@@ -1,15 +1,66 @@
 import React, { Component } from "react";
 import Card from 'react-bootstrap/Card';
+import axios from 'axios'
 export default class Login extends Component {
     constructor() {
         super()
         this.state = {
             isLoggedIn: false,
-            img : ''
+            img : '',
+            user: "",
+            pswd: "",
+            helloName: "",
         }
     }
 
     login = () => {
+        this.callLoginApi().then(() => {
+            console.log("finish");
+        })
+    }
+
+    getText = () => {
+        this.callGetTextApi()
+    }
+
+    callGetTextApi = () => {
+        return axios.get("http://localhost:5000/login/gettext", {
+            withCredentials: true,
+            crossDomain: true
+        }).then(response => {
+            console.log(response.data);
+            if(response.data.status === "success") {
+                alert(response.data.message)
+            } else {
+                alert("fail", response.data.message)
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    callLoginApi = () => {
+        console.log(this.state.user, this.state.pswd);
+        return axios.post("http://localhost:5000/login/", {
+            username: this.state.user,
+            passwords: this.state.pswd
+        }, {
+            withCredentials: true,
+            crossDomain: true
+        }).then(response => {
+            console.log(response.data);
+            if(response.data.status == "success") {
+                this.showHello(response.data.username)
+            } else {
+                alert("Login error," + response.data.message)
+                console.log(response.data.message);
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    showHello = (username) => {
         const birthday = new Date();
         const day = birthday.getDay();
         let imgs = ''
@@ -29,22 +80,19 @@ export default class Login extends Component {
         else if (day ==7){
             imgs= "https://www.xn--k3cc7brobq0b3a7a3s.com/wp-content/uploads/2020/11/DSC_6482-1024x995.jpg"
         }
-        this.setState({ isLoggedIn: true })
-        this.setState({ img:imgs })
+        this.setState({ isLoggedIn: true, img:imgs, helloName: username })
     }
     render() {
         if(this.state.isLoggedIn) {
-        
-
             return (
                 <Card >
                 <Card.Img variant="top" src={this.state.img} />
                 <Card.Body>
-                  <Card.Title>Card Title</Card.Title>
                   <Card.Text>
-                    Some quick example text to build on the card title and make up the bulk of
-                    the card's content.
+                    สวัสดี คุณ {this.state.helloName}
                   </Card.Text>
+                  <button type="button" className="btn btn-dark btn-lg btn-block" onClick={this.getText}>
+                ดูดวงวันนี้</button>
                 </Card.Body>
               </Card>
             )
@@ -58,23 +106,15 @@ export default class Login extends Component {
 
                 <div className="form-group">
                     <label>Email</label>
-                    <input type="email" className="form-control" placeholder="Enter email" />
+                    <input type="text" className="form-control" placeholder="Enter email" onChange={e => this.setState({ user: e.target.value })}/>
                 </div>
 
                 <div className="form-group">
                     <label>Password</label>
-                    <input type="password" className="form-control" placeholder="Enter password" />
+                    <input type="password" className="form-control" placeholder="Enter password" onChange={e => this.setState({ pswd: e.target.value })}/>
                 </div>
 
-                <div className="form-group">
-                    <div className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                        <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                    </div>
-                </div>
-               
-
-                <button type="submit" className="btn btn-dark btn-lg btn-block" onClick={this.login}>
+                <button type="button" className="btn btn-dark btn-lg btn-block" onClick={this.login}>
                 Sign in</button>
                 <p className="forgot-password text-right">
                     Forgot <a href="#">password?</a>
