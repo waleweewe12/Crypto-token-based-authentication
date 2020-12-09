@@ -13,6 +13,27 @@ export default class Login extends Component {
         }
     }
 
+    componentDidMount() {
+        this.callAuthApi()
+    }
+
+    callAuthApi = () => {
+        return axios.get("http://localhost:5000/login/auth", {
+            withCredentials: true,
+            crossDomain: true
+        }).then(response => {
+            console.log(response.data);
+            if(response.data.status == "success") {
+                this.showHello(response.data.username)
+            } else {
+                // alert("Login error," + response.data.message)
+                console.log(response.data.message);
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     login = () => {
         this.callLoginApi().then(() => {
             console.log("finish");

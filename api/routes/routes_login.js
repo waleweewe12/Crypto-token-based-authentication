@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser')
 const UserModel = require('../models/models_user')
 const cors = require('cors')
 
-router.use(cors({credentials: true, origin: "http://localhost:3001"}))
+router.use(cors({credentials: true, origin: "http://localhost:3000"}))
 router.use(bodyParser.json())
 router.use(cookieParser())
 
@@ -129,6 +129,52 @@ router.get('/gettext',(req,res)=>{
                     signed: false,
                     secure:false  
                 }).json({status:"success", message: text})
+            }else{
+                let key = "_" + Math.random().toString(36).substr(2, 30)
+                keys[decoded.userId] = key
+                res.json({status:"fail", message:"verify token error"})
+            }
+        } else {
+            res.json({status:"fail", message:"verify token error (old)"})
+        }
+        
+    } catch(err) {
+        console.log(err)
+        res.json({status:"fail",message:"jwt error"})
+    }
+})
+
+router.get('/auth',(req,res)=>{
+    let token = req.cookies['token']
+    if(token===undefined)
+        res.json({status:'fail',message:'token undefined'})
+    try {
+        var decoded = jwt.verify(token, 'C2ypt0@egc0')
+        if(loginKeys[decoded.userId] === decoded.loginKey) {
+            if(keys[decoded.userId] === decoded.key ){
+                let key = "_" + Math.random().toString(36).substr(2, 30)
+                keys[decoded.userId.toString()] = key
+                let data = {
+                    key:key,
+                    loginKey: decoded.loginKey,
+                    userId:decoded.userId.toString(),
+                    username:decoded.username
+                }
+                //create jwt token
+                let token = jwt.sign(
+                    data,
+                    'C2ypt0@egc0',
+                    {
+                        expiresIn: '1h' // 60 * 60
+                    }
+                )
+                
+                res.cookie('token', token, { 
+                    httpOnly:true,
+                    maxAge:360000,
+                    signed: false,
+                    secure:false  
+                }).json({status:"success", message: "auth success", username: decoded.username})
             }else{
                 let key = "_" + Math.random().toString(36).substr(2, 30)
                 keys[decoded.userId] = key
